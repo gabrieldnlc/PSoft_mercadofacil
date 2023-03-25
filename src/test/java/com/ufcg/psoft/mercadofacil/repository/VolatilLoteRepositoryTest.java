@@ -1,6 +1,10 @@
 package com.ufcg.psoft.mercadofacil.repository;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +29,7 @@ class VolatilLoteRepositoryTest {
    Lote resultado;
    Produto produto;
 
-
+   
    @BeforeEach
    void setup() {
        produto = Produto.builder()
@@ -89,7 +93,205 @@ class VolatilLoteRepositoryTest {
 
 
    }
+   
+   @Test
+   @DisplayName("Achar Lotes via ID")
+   void acharLotes() {
+       Lote inserido = driver.save(lote);
+       
+       assertEquals(driver.find(1L), inserido);
+       
+       Produto new_produto = Produto.builder()
+               .id(2L)
+               .nome("Produto 2")
+               .codigoBarra("5550123")
+               .fabricante("Outro Fabricante")
+               .preco(5.75)
+               .build();
+       Lote new_lote = Lote.builder()
+               .id(2L)
+               .numeroDeItens(50)
+               .produto(new_produto)
+               .build();
+       
+       driver.save(new_lote);
+       
+       assertEquals(driver.find(2L), new_lote);
+       
+   }
+   
+   @Test
+   @DisplayName("Retornar a lista completa de Lotes")
+   void acharTodosLotes() {
+              
+       Produto produto2 = Produto.builder()
+               .id(2L)
+               .nome("Produto 2")
+               .codigoBarra("5550123")
+               .fabricante("Outro Fabricante")
+               .preco(5.75)
+               .build();
+       
+       Produto produto3 = Produto.builder()
+               .id(3L)
+               .nome("Produto 3")
+               .codigoBarra("2345678")
+               .fabricante("Mais um Fabricante")
+               .preco(0.5)
+               .build();
+       
+       
+       Lote lote2 = Lote.builder()
+               .id(2L)
+               .numeroDeItens(50)
+               .produto(produto2)
+               .build();
+              
+       Lote lote3 = Lote.builder()
+               .id(3L)
+               .numeroDeItens(55)
+               .produto(produto3)
+               .build();
+       
+       driver.save(lote);
+       driver.save(lote2);
+       driver.save(lote3);
+       
+       List<Lote> lista = driver.findAll();
+       assertEquals(lista.size(), 3);
+       
+       assertEquals(lista.get(0), lote);
+       assertEquals(lista.get(1), lote2);
+       assertEquals(lista.get(2), lote3);
+       
+   }
+   
+   @Test
+   @DisplayName("Atualizar o repositório")
+   void updateRepository() {
+              
+       Produto produto2 = Produto.builder()
+               .id(2L)
+               .nome("Produto 2")
+               .codigoBarra("5550123")
+               .fabricante("Outro Fabricante")
+               .preco(5.75)
+               .build();
+       
+       Produto produto3 = Produto.builder()
+               .id(3L)
+               .nome("Produto 3")
+               .codigoBarra("2345678")
+               .fabricante("Mais um Fabricante")
+               .preco(0.5)
+               .build();
+       
+       Lote lote2 = Lote.builder()
+               .id(2L)
+               .numeroDeItens(50)
+               .produto(produto2)
+               .build();
+              
+       Lote lote3 = Lote.builder()
+               .id(3L)
+               .numeroDeItens(55)
+               .produto(produto3)
+               .build();
+       
+       driver.save(lote);
+       driver.save(lote2);
+       driver.save(lote3);
+              
+       Lote retorno = driver.update(lote3);
+       
+       assertNotNull(retorno);
+       assertEquals(driver.findAll().size(), 1);
+       assertEquals(lote3, retorno);
+       assertEquals(driver.find(3L), lote3);
+       
+   }
 
+   @Test
+   @DisplayName("Deletar um Lote do Repositório")
+   void deletarLote() {
+                     
+       Produto produto2 = Produto.builder()
+               .id(2L)
+               .nome("Produto 2")
+               .codigoBarra("5550123")
+               .fabricante("Outro Fabricante")
+               .preco(5.75)
+               .build();       
+       
+       Lote lote2 = Lote.builder()
+               .id(2L)
+               .numeroDeItens(50)
+               .produto(produto2)
+               .build();
+       
+       Produto produto3 = Produto.builder()
+               .id(3L)
+               .nome("Produto 3")
+               .codigoBarra("2345678")
+               .fabricante("Mais um Fabricante")
+               .preco(0.5)
+               .build();
+                     
+       Lote lote3 = Lote.builder()
+               .id(3L)
+               .numeroDeItens(55)
+               .produto(produto3)
+               .build();
+       
+       driver.save(lote);
+       driver.save(lote2);
+       driver.save(lote3);
+       
+       driver.delete(lote);
+       assertEquals(driver.findAll().size(), 2);
+        
+   }
+   
+   @Test
+   @DisplayName("Deletar todos os Lotes do Repositório")
+   void deletarTodosLotes() {
+                     
+       Produto produto2 = Produto.builder()
+               .id(2L)
+               .nome("Produto 2")
+               .codigoBarra("5550123")
+               .fabricante("Outro Fabricante")
+               .preco(5.75)
+               .build();       
+       
+       Lote lote2 = Lote.builder()
+               .id(2L)
+               .numeroDeItens(50)
+               .produto(produto2)
+               .build();
+       
+       Produto produto3 = Produto.builder()
+               .id(3L)
+               .nome("Produto 3")
+               .codigoBarra("2345678")
+               .fabricante("Mais um Fabricante")
+               .preco(0.5)
+               .build();
+                     
+       Lote lote3 = Lote.builder()
+               .id(3L)
+               .numeroDeItens(55)
+               .produto(produto3)
+               .build();
+       
+       driver.save(lote);
+       driver.save(lote2);
+       driver.save(lote3);
+       
+       driver.deleteAll();
+       assertEquals(driver.findAll().size(), 0);
+        
+   }
 
 }
 
